@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
-	stabilityapi "github.com/matty271828/ai-posters/internal/app/stabilityapi"
+	stabilityapi "github.com/matty271828/ai-posters/internal/stabilityapi"
 )
 
 func main() {
