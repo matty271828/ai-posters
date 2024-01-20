@@ -5,8 +5,7 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
-	"github.com/matty271828/ai-posters/internal/imageprocessing"
-	stabilityapi "github.com/matty271828/ai-posters/internal/stabilityapi"
+	"github.com/matty271828/ai-posters/internal/jobs"
 )
 
 func main() {
@@ -15,17 +14,6 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// generate an image
-	imagePaths, err := stabilityapi.GenerateImage("A beautiful monstera plant in the style of a 19th century scientific drawing.")
-	if err != nil {
-		log.Fatalf("Error generating image: %v", err)
-	}
-	fmt.Println("Generated images:", imagePaths)
-
-	// superimpose the image onto a poster frame
-	outputPath, err := imageprocessing.Frame("assets/stock/blackframe.png", imagePaths[0], "assets/out/result.png")
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
-	fmt.Println("Image saved to: ", outputPath)
+	prompt := fmt.Sprintf("A beautiful monstera plant in the style of a 19th century scientific drawing.")
+	_, _, err = jobs.GenerateImageJob(prompt, "assets/stock/blackframe.png", "assets/out/result.png")
 }
