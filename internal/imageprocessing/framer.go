@@ -22,13 +22,13 @@ func Frame(framePath, posterPath, outputPath string) (string, error) {
 
 	// Resize the poster to fit the frame.
 	// Replace these with the actual dimensions of the area in the frame where the poster should fit.
-	frameWidth, frameHeight := 300, 500
-	poster = imaging.Resize(poster, frameWidth, frameHeight, imaging.Lanczos)
+	frameWidth, frameHeight := 350, 350
+	resizedPoster := imaging.Resize(poster, frameWidth, frameHeight, imaging.Lanczos)
 
-	// Superimpose poster onto frame
+	// Superimpose the resized poster onto the frame.
 	// Replace these with the actual coordinates where the poster should be placed on the frame.
-	frameX, frameY := 100, 150
-	result := imaging.Overlay(frame, poster, image.Pt(frameX, frameY), 1.0)
+	frameX, frameY := 342, 325
+	result := imaging.Overlay(frame, resizedPoster, image.Pt(frameX, frameY), 1.0)
 
 	// Save the output image to outputPath
 	err = imaging.Save(result, outputPath)

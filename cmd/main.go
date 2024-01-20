@@ -16,7 +16,7 @@ func main() {
 	}
 
 	// generate an image
-	imagePaths, err := stabilityapi.GenerateImage("A lighthouse on a cliff")
+	imagePaths, err := stabilityapi.GenerateImage("A beautiful monstera plant in the style of a 19th century scientific drawing.")
 	if err != nil {
 		log.Fatalf("Error generating image: %v", err)
 	}
