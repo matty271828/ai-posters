@@ -32,7 +32,7 @@ function MainPage() {
             const generatedImageUrl = URL.createObjectURL(imageBlob);
     
             // Temporary Path for the Generated Image - Adjust as needed
-            const imagePath = "/Users/matthewmaclean/ai-posters/assets/out/v1_txt2img_0.png";
+            const imagePath = "./assets/out/v1_txt2img_0.png";
     
             // Second Endpoint: Frame Image
             const frameEndpoint = "http://localhost:8080/api/frame-image?frameSize=small";
