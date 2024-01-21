@@ -14,34 +14,53 @@ function MainPage() {
     const handleGenerate = async () => {
         setLoading(true);
         try {
-            const endpoint = "http://localhost:8080/api/generate-image"; // Your API endpoint
-    
-            // POST request with the prompt as payload
-            const response = await fetch(endpoint, {
+            // First Endpoint: Generate Image
+            const generateEndpoint = "http://localhost:8080/api/generate-image";
+            const generateResponse = await fetch(generateEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ prompt: prompt }), // 'prompt' is your state variable
+                body: JSON.stringify({ prompt: prompt }),
             });
     
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (!generateResponse.ok) {
+                throw new Error('Network response was not ok for generate image');
             }
     
-            // Assuming the response is a binary image
-            const imageBlob = await response.blob();
-            const imageUrl = URL.createObjectURL(imageBlob);
+            const imageBlob = await generateResponse.blob();
+            const generatedImageUrl = URL.createObjectURL(imageBlob);
     
-            // Update the images state with the new image URL
-            setImages([imageUrl]);
+            // Temporary Path for the Generated Image - Adjust as needed
+            const imagePath = "/Users/matthewmaclean/ai-posters/assets/out/v1_txt2img_0.png";
+    
+            // Second Endpoint: Frame Image
+            const frameEndpoint = "http://localhost:8080/api/frame-image?frameSize=small";
+            const frameResponse = await fetch(frameEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ imagePath: imagePath }),
+            });
+    
+            if (!frameResponse.ok) {
+                throw new Error('Network response was not ok for frame image');
+            }
+    
+            const frameImageBlob = await frameResponse.blob();
+            const framedImageUrl = URL.createObjectURL(frameImageBlob);
+    
+            // Update the images state with the new image URLs
+            setImages([generatedImageUrl, framedImageUrl]);
         } catch (error) {
             console.error('Error fetching data: ', error);
-            // Handle errors as needed (e.g., show an error message to the user)
+            // Handle errors as needed
         } finally {
             setLoading(false);
         }
-    };    
+    };
+       
 
     useEffect(() => {
         // Add resize listener
