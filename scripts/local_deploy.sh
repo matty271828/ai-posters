@@ -24,10 +24,10 @@ if [ -f app.pid ]; then
     rm app.pid
 fi
 
-# Step 3: Run the binary
+# Start the server in the background and redirect output to a log file
 echo "Starting the application..."
-./bin/ai-posters-binary & echo $! > app.pid
-echo "backend server started."
+./bin/ai-posters-binary > server.log 2>&1 & echo $! > app.pid
+echo "Backend server started. Output is being logged to server.log."
 
 # Allow some time for the server to start
 sleep 2
@@ -39,6 +39,5 @@ osascript -e "tell app \"Terminal\" to do script \"cd $UI_PATH && npm start\""
 
 # Step 5: Open a web browser
 echo "Opening web browser..."
-open "http://localhost:3000"
 
 exit 0
