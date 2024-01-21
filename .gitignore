@@ -24,5 +24,7 @@ local.env
 
 ai-posters-binary
 
+app.pid
+
 # directory storing generated images
 out
