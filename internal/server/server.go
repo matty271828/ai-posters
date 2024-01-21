@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -31,5 +32,13 @@ func (s *Server) AddRoute(pattern string, handler http.HandlerFunc) {
 // Start initiates the server to start listening on the specified port
 func (s *Server) Start() error {
 	fmt.Printf("Server starting on port %s\n", s.Port)
-	return http.ListenAndServe(":"+s.Port, s.Router)
+
+	// Setup CORS
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	// TODO: Adjust this to allow specific origins when moving to production
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	// Apply the CORS middleware to our router
+	return http.ListenAndServe(":"+s.Port, handlers.CORS(originsOk, headersOk, methodsOk)(s.Router))
 }
