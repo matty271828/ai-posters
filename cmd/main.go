@@ -17,16 +17,17 @@ func main() {
 		log.Fatalf("Failed to set up environment: %v", err)
 	}
 
-	myServer, err := server.NewServer(basepath, "8080")
+	server, err := server.NewServer(basepath, "8080")
 	if err != nil {
 		log.Fatalf("Error creating server: %v", err)
 	}
 
 	// Setup routes
-	myServer.AddRoute("/api/generate-image", api.NewAPI().GenerateImageHandler)
+	server.AddRoute("/api/generate-image", api.NewAPI().GenerateImageHandler)
+	server.AddRoute("/api/frame-image", api.NewAPI().SuperImposeImageHandler)
 
 	// Start the server
-	if err := myServer.Start(); err != nil {
+	if err := server.Start(); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }
