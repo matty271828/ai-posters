@@ -34,7 +34,7 @@ func main() {
 
 func setupEnv() (string, error) {
 	// Attempt to load from .env file, if it exists
-	_ = godotenv.Load("local.env")
+	_ = godotenv.Load()
 
 	// Get the path of the currently running executable
 	execPath, err := os.Executable()

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Step 1: Load environment variables from .env file
-source local.env
+source .env
 
 # Step 2: Build the binary
 echo "Building the application..."
