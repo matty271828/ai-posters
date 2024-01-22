@@ -15,7 +15,7 @@ function MainPage() {
         setLoading(true);
         try {
             // First Endpoint: Generate Image
-            const generateEndpoint = "{process.env.REACT_APP_API_BASE_URL}/api/generate-image";
+            const generateEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/generate-image`;
             const generateResponse = await fetch(generateEndpoint, {
                 method: 'POST',
                 headers: {
@@ -35,7 +35,7 @@ function MainPage() {
             const imagePath = "./assets/out/v1_txt2img_0.png";
     
             // Second Endpoint: Frame Image
-            const frameEndpoint = "{process.env.REACT_APP_API_BASE_URL}/api/frame-image?frameSize=small";
+            const frameEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/frame-image?frameSize=small`;
             const frameResponse = await fetch(frameEndpoint, {
                 method: 'POST',
                 headers: {
