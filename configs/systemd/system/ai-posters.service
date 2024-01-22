@@ -1,0 +1,34 @@
+# ===============================================================================
+# INSTRUCTIONS TO UPDATE THE ai-posters.service FILE
+# ===============================================================================
+# This file has been added to to serve as documentation. Any changes will need
+# to be manually added to the droplet.
+#
+# To add this file back to the digital ocean droplet do the following: 
+# 1. SSH into the droplet - make changes using preferred editor
+# e.g. sudo vim /etc/systemd/system/ai-posters.service
+#
+# 2. After editing the file, reload systemd:
+# sudo systemctl daemon-reload
+# sudo systemctl restart ai-posters
+#
+# 3. Check status using:
+# sudo systemctl status ai-posters
+#
+# n.b. API key values will need to be manually inputted during 1. 
+# ===============================================================================
+[Unit]
+Description=Flight Prices
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/ai-posters
+ExecStart=/root/ai-posters/ai-posters-binary
+Restart=always  # This will ensure the app restarts if it crashes
+Environment="STABILITY_API_KEY=<STABILITY_API_KEY>"
+StandardOutput=append:/root/ai-posters/logfile.log
+StandardError=append:/root/ai-posters/error.log  
+
+[Install]
+WantedBy=multi-user.target
