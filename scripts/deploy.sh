@@ -67,31 +67,6 @@ else
     echo 'Service not found or already stopped.'
 fi"
 
-# Function to update and check the environment variable in the service file
-update_env_var() {
-    VAR_NAME="$1"
-    VAR_VALUE="$2"
-    
-    # Check and potentially update the environment variable on the remote server
-    ssh ${REMOTE_SERVER} "
-      # Ensure the variable is in the [Service] section
-      if grep -q 'Environment=\"${VAR_NAME}=' /etc/systemd/system/ai-posters.service; then
-        # If it exists but is different, then replace
-        if ! grep -q 'Environment=\"${VAR_NAME}=${VAR_VALUE}\"' /etc/systemd/system/ai-posters.service; then
-          sed -i '/Environment=\"${VAR_NAME}=/c\Environment=\"${VAR_NAME}=${VAR_VALUE}\"' /etc/systemd/system/ai-posters.service
-          echo "${VAR_NAME} updated"
-        fi
-      else
-        # If it doesn't exist, insert it after [Service]
-        sed -i '/\[Service\]/a Environment=\"${VAR_NAME}=${VAR_VALUE}\"' /etc/systemd/system/ai-posters.service
-        echo "${VAR_NAME} added"
-      fi
-    "
-}
-
-# Update the environment variables
-update_env_var "STABILITY_API_KEY" "$STABILITY_API_KEY"
-
 # Ensure the bin directory exists on the remote server
 echo "Ensuring bin directory exists on the remote server..."
 ssh ${REMOTE_SERVER} "mkdir -p ${REMOTE_PATH}/bin"
@@ -140,7 +115,12 @@ echo "Transferring the ai-posters service file..."
 SERVICE_FILE="configs/systemd/system/ai-posters.service"
 REMOTE_SERVICE_FILE="/etc/systemd/system/ai-posters.service"
 
-scp ${SERVICE_FILE} ${REMOTE_SERVER}:${REMOTE_SERVICE_FILE}
+# Replace placeholder in the service file and transfer
+TEMP_SERVICE_FILE=$(mktemp)
+sed "s/PLACEHOLDER_API_KEY/${STABILITY_API_KEY}/" ${SERVICE_FILE} > ${TEMP_SERVICE_FILE}
+scp ${TEMP_SERVICE_FILE} ${REMOTE_SERVER}:${REMOTE_SERVICE_FILE}
+rm ${TEMP_SERVICE_FILE}
+
 if [ $? -ne 0 ]; then
     echo "Error transferring the ai-posters service file. Exiting."
     exit 1

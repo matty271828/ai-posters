@@ -24,6 +24,7 @@ User=root
 WorkingDirectory=/root/ai-posters
 ExecStart=/root/ai-posters/bin/ai-posters-binary
 Restart=always  # This will ensure the app restarts if it crashes
+Environment="STABILITY_API_KEY=PLACEHOLDER_API_KEY"
 StandardOutput=append:/root/ai-posters/logfile.log
 StandardError=append:/root/ai-posters/error.log  
 
