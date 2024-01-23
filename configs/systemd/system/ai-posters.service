@@ -22,7 +22,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/root/ai-posters
-ExecStart=/root/ai-posters/ai-posters-binary
+ExecStart=/root/ai-posters/bin/ai-posters-binary
 Restart=always  # This will ensure the app restarts if it crashes
 StandardOutput=append:/root/ai-posters/logfile.log
 StandardError=append:/root/ai-posters/error.log  
