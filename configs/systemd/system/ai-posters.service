@@ -14,11 +14,9 @@
 #
 # 3. Check status using:
 # sudo systemctl status ai-posters
-#
-# n.b. API key values will need to be manually inputted during 1. 
 # ===============================================================================
 [Unit]
-Description=Flight Prices
+Description=Ai Posters
 After=network.target
 
 [Service]
@@ -26,7 +24,6 @@ User=root
 WorkingDirectory=/root/ai-posters
 ExecStart=/root/ai-posters/ai-posters-binary
 Restart=always  # This will ensure the app restarts if it crashes
-Environment="STABILITY_API_KEY=<STABILITY_API_KEY>"
 StandardOutput=append:/root/ai-posters/logfile.log
 StandardError=append:/root/ai-posters/error.log  
 
