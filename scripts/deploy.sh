@@ -92,11 +92,23 @@ if [ ! -d "posters-ui/build" ]; then
 fi
 
 echo "Transferring the UI..."
-scp -r posters-ui/build ${REMOTE_SERVER}:${REMOTE_PATH}/ui
+scp -r posters-ui/build/ ${REMOTE_SERVER}:${REMOTE_PATH}/ui
 if [ $? -ne 0 ]; then
     echo "Error transferring the UI. Exiting."
     exit 1
 fi
+
+# Ensure files are in the correct directory and clean up if needed
+ssh ${REMOTE_SERVER} << 'EOF'
+if [ -d /var/www/ai-posters/ui/build ]; then
+    mv /var/www/ai-posters/ui/build/* /var/www/ai-posters/ui/
+    rm -rf /var/www/ai-posters/ui/build
+fi
+chown -R www-data:www-data /var/www/ai-posters/ui
+chmod -R 755 /var/www/ai-posters/ui
+EOF
+
+echo "UI transferred and directory structure adjusted."
 
 # Transfer updated assets
 echo "Transferring updated assets..."
