@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import generateImage from '../services/imageService';
+import handleDownload from '../services/handleDownload';
 
 function MainPage() {
     const [prompt, setPrompt] = useState('');
@@ -58,6 +59,14 @@ function MainPage() {
                     </Grid>
                 ))}
             </Grid>
+            {images.length > 0 && (
+                <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    onClick={() => handleDownload(images)}>
+                    Download
+                </Button>
+            )}
         </Container>
     );
 }
