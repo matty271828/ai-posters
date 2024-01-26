@@ -31,7 +31,7 @@ func GenerateImage(prompt string) ([]string, error) {
 	// Acquire an API key from the environment
 	apiKey, hasAPIKey := os.LookupEnv("STABILITY_API_KEY")
 	if !hasAPIKey {
-		return nil, fmt.Errorf("Missing STABILITY_API_KEY environment variable")
+		return nil, fmt.Errorf("missing STABILITY_API_KEY environment variable")
 	}
 
 	jsonData := fmt.Sprintf(`{
@@ -103,6 +103,5 @@ func GenerateImage(prompt string) ([]string, error) {
 			return nil, err
 		}
 	}
-
 	return savedFilePaths, nil
 }
