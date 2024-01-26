@@ -83,7 +83,7 @@ func GenerateImage(prompt string) ([]string, error) {
 	// Write the images to disk
 	var savedFilePaths []string
 	for i, image := range body.Images {
-		outFile := fmt.Sprintf("./assets/generated/v1_txt2img_%d.png", i)
+		outFile := fmt.Sprintf("./assets/generated/generated_img_%d.png", i)
 		savedFilePaths = append(savedFilePaths, outFile)
 		file, err := os.Create(outFile)
 		if err != nil {

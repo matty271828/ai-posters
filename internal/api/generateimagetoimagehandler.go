@@ -10,6 +10,7 @@ import (
 type GenerateImageToImageHandlerRequest struct {
 	Prompt     string `json:"prompt"`
 	SeedPath   string `json:"seedPath"`
+	Strength   string `json:"strength"`
 	OutputPath string `json:"outputPath"`
 }
 
@@ -23,7 +24,7 @@ func (a *API) GenerateImageToImageHandler(w http.ResponseWriter, r *http.Request
 
 	// Call the job function
 	// TODO: Move the outpath out of the request to ensure is not exposed publically by the webui
-	generatedPath, err := jobs.GenerateImageToImageJob(request.Prompt, request.SeedPath)
+	generatedPath, err := jobs.GenerateImageToImageJob(request.Prompt, request.SeedPath, request.Strength)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

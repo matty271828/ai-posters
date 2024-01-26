@@ -21,7 +21,9 @@ type ImageToImageResponse struct {
 	Images []ImageToImageImage `json:"artifacts"`
 }
 
-func GenerateImageToImage(prompt, seedPath string) ([]string, error) {
+func GenerateImageToImage(prompt, seedPath, strength string) ([]string, error) {
+	// TODO: Validate image strength is between 0 and 1 inclusive
+
 	engineId := "stable-diffusion-xl-1024-v1-0"
 
 	// Build REST endpoint URL
@@ -50,7 +52,7 @@ func GenerateImageToImage(prompt, seedPath string) ([]string, error) {
 
 	// Write the options to the request
 	_ = writer.WriteField("init_image_mode", "IMAGE_STRENGTH")
-	_ = writer.WriteField("image_strength", "0.35")
+	_ = writer.WriteField("image_strength", strength)
 	_ = writer.WriteField("text_prompts[0][text]", prompt)
 	_ = writer.WriteField("cfg_scale", "7")
 	_ = writer.WriteField("samples", "1")
@@ -88,7 +90,7 @@ func GenerateImageToImage(prompt, seedPath string) ([]string, error) {
 	// Write the images to disk
 	var savedFilePaths []string
 	for i, image := range body.Images {
-		outFile := fmt.Sprintf("./assets/generated/v1_img2img_%d.png", i)
+		outFile := fmt.Sprintf("./assets/generated/generated_img_%d.png", i)
 		savedFilePaths = append(savedFilePaths, outFile)
 		file, err := os.Create(outFile)
 		if err != nil {

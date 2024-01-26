@@ -5,9 +5,9 @@ import (
 )
 
 // GenerateImageToImageJob is a job used to generate an image based on a prompt and an image.
-func GenerateImageToImageJob(prompt, seedPath string) ([]string, error) {
+func GenerateImageToImageJob(prompt, seedPath, strength string) ([]string, error) {
 	// generate an image
-	imagePaths, err := stabilityapi.GenerateImageToImage(prompt, seedPath)
+	imagePaths, err := stabilityapi.GenerateImageToImage(prompt, seedPath, strength)
 	if err != nil {
 		return nil, err
 	}
