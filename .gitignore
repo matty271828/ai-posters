@@ -31,3 +31,4 @@ server.log
 
 # directory storing generated images
 out
+node_modules
