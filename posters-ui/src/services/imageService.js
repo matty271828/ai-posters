@@ -20,7 +20,7 @@ const generateImage = async (prompt, setImages) => {
         const generatedImageUrl = URL.createObjectURL(imageBlob);
 
         // Temporary Path for the Generated Image - Adjust as needed
-        const imagePath = "./assets/out/v1_txt2img_0.png";
+        const imagePath = "./assets/generated/v1_txt2img_0.png";
 
         // Second Endpoint: Frame Image
         const frameEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/frame-image?frameSize=small`;

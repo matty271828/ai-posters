@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/matty271828/ai-posters/internal/jobs"
@@ -17,6 +18,7 @@ func (a *API) GenerateImageHandler(w http.ResponseWriter, r *http.Request) {
 	var request GenerateImageHandlerRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
+		fmt.Println(err)
 		return
 	}
 
@@ -25,6 +27,7 @@ func (a *API) GenerateImageHandler(w http.ResponseWriter, r *http.Request) {
 	generatedPath, err := jobs.GenerateImageJob(request.Prompt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
