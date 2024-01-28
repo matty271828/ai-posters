@@ -87,15 +87,21 @@ func GenerateImageToImage(prompt, seedPath, strength string) ([]string, error) {
 		return nil, err
 	}
 
-	err = os.MkdirAll("./assets/out", 0755) // 0755 is a common permission setting allowing read and execute access
-	if err != nil {
-		return nil, err
-	}
-
 	// Write the images to disk
 	var savedFilePaths []string
+	outPath := "./assets/out"
+
+	// Ensure the output directory exists
+	if _, err := os.Stat(outPath); os.IsNotExist(err) {
+		err := os.MkdirAll(outPath, os.ModePerm)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	for i, image := range body.Images {
-		outFile := fmt.Sprintf("./assets/out/v1_img2img_%d.png", i)
+		outFile := fmt.Sprintf("%s/v1_img2img_%d.png", outPath, i)
+
 		savedFilePaths = append(savedFilePaths, outFile)
 		file, err := os.Create(outFile)
 		if err != nil {
