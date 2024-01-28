@@ -8,7 +8,7 @@ import (
 func SuperImposeImageJob(imagePath, framePath string) (string, error) {
 	// superimpose the image onto a poster frame
 	resultPath, err := imageprocessing.Frame(
-		framePath, imagePath, "./assets/generated/result.png",
+		framePath, imagePath, "./assets/out/result.png",
 	)
 	if err != nil {
 		return "", err
