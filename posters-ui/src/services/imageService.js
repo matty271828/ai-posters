@@ -1,6 +1,8 @@
 // imageService.js
 
-const generateImage = async (prompt, setImages) => {
+// imageGeneration.js
+export const generateTextToImage = async (prompt, setImages) => {
+    // Function body
     try {
         // First Endpoint: Generate Image
         const generateEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/generate-image`;
@@ -47,4 +49,8 @@ const generateImage = async (prompt, setImages) => {
     }
 };
 
-export default generateImage;
+export const generateImage2Image = async (image, prompt, setImages) => {
+    // Function body
+};
+
+
