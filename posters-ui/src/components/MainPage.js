@@ -56,19 +56,20 @@ function MainPage() {
                 {images.map((image, index) => (
                     <Grid item xs={12} md={6} key={index}>
                         <img src={image} alt="Generated" style={{ width: '100%' }} />
+                        <Button 
+                            variant="contained" 
+                            color="secondary" 
+                            onClick={() => handleDownload(image)}
+                            style={{ margin: '10px 0' }}
+                        >
+                            Download Image {index + 1}
+                        </Button>
                     </Grid>
                 ))}
             </Grid>
-            {images.length > 0 && (
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
-                    onClick={() => handleDownload(images)}>
-                    Download
-                </Button>
-            )}
         </Container>
     );
+    
 }
 
 export default MainPage;
