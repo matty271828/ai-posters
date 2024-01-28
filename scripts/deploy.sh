@@ -98,8 +98,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Ensure files are in the correct directory and clean up if needed
 ssh ${REMOTE_SERVER} << 'EOF'
+# Clear out the existing static directory
+rm -rf /var/www/ai-posters/ui/static/*
+
+# Move new files from build directory
 if [ -d /var/www/ai-posters/ui/build ]; then
     mv /var/www/ai-posters/ui/build/* /var/www/ai-posters/ui/
     rm -rf /var/www/ai-posters/ui/build
