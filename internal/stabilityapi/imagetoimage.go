@@ -42,6 +42,11 @@ func GenerateImageToImage(prompt, seedPath, strength string) ([]string, error) {
 	data := &bytes.Buffer{}
 	writer := multipart.NewWriter(data)
 
+	// Check File Existence and Permissions
+	if _, err := os.Stat(seedPath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("file does not exist at %s", seedPath)
+	}
+
 	// Write the init image to the request
 	initImageWriter, _ := writer.CreateFormField("init_image")
 	initImageFile, initImageErr := os.Open(seedPath)

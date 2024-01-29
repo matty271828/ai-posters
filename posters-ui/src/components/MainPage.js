@@ -14,11 +14,22 @@ function MainPage() {
     const [images, setImages] = useState([]);
     const [uploadedImage, setUploadedImage] = useState(null);
 
-    const handleImageUpload = (event) => {
+    const toBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    const handleImageUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setUploadedImage(imageUrl);
+            try {
+                const base64String = await toBase64(file);
+                setUploadedImage(base64String);
+            } catch (error) {
+                console.error('Error converting file to base64:', error);
+            }
         }
     };
     
