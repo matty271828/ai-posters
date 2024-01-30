@@ -45,7 +45,6 @@ func Resize(imagePath string) (string, error) {
 	// Calculate the aspect ratio of the uploaded image.
 	uploadedAspectRatio := float64(image.Bounds().Dx()) / float64(image.Bounds().Dy())
 
-	// check if resize required
 	required, err := CheckResizeRequired(imagePath)
 	if err != nil {
 		return "", err

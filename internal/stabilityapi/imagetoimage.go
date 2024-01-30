@@ -134,5 +134,6 @@ func GenerateImageToImage(prompt, seedPath, strength string) ([]string, error) {
 			return nil, err
 		}
 	}
+
 	return savedFilePaths, nil
 }
