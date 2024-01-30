@@ -1,7 +1,9 @@
 package imageprocessing
 
 import (
+	"fmt"
 	"math"
+	"os"
 
 	"github.com/disintegration/imaging"
 )
@@ -43,6 +45,16 @@ func Resize(imagePath string) (string, error) {
 	// Calculate the aspect ratio of the uploaded image.
 	uploadedAspectRatio := float64(image.Bounds().Dx()) / float64(image.Bounds().Dy())
 
+	// check if resize required
+	required, err := CheckResizeRequired(imagePath)
+	if err != nil {
+		return "", err
+	}
+
+	if !required {
+		return imagePath, nil
+	}
+
 	var selectedDimension float64
 	closestAspectRatioDiff := float64(999999) // Initialize with a large value.
 	for dimension := range validDimensions {
@@ -59,15 +71,33 @@ func Resize(imagePath string) (string, error) {
 	// Resize the uploaded image to match the selected dimension while maintaining the aspect ratio.
 	resizedImage := imaging.Resize(image, width, height, imaging.Lanczos)
 
+	// Ensure the "./assets/out/" directory exists
+	outPath := "./assets/out"
+
+	// Ensure the output directory exists
+	if _, err := os.Stat(outPath); os.IsNotExist(err) {
+		err := os.MkdirAll(outPath, os.ModePerm)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	// Create a temporary file within the "./assets/out/" directory
+	filePath := outPath + "/resized_img.png"
+	tmpFile, err := os.Create(filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to create resized file: %v", err)
+	}
+	defer tmpFile.Close() // Ensure file is closed in all cases
+
 	// Save the output image to outputPath
-	outputPath := "./assets/out/resized_img.png"
-	err = imaging.Save(resizedImage, outputPath)
+	err = imaging.Save(resizedImage, filePath)
 	if err != nil {
 		return "", err
 	}
 
 	// Return the output path and no error
-	return outputPath, nil
+	return filePath, nil
 }
 
 // CheckResizeRequired is used to validate whether an image needs to be

@@ -9,6 +9,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"github.com/matty271828/ai-posters/internal/imageprocessing"
 )
 
 type ImageToImageImage struct {
@@ -47,11 +49,17 @@ func GenerateImageToImage(prompt, seedPath, strength string) ([]string, error) {
 		return nil, fmt.Errorf("file does not exist at %s", seedPath)
 	}
 
+	// check if the image needs to be resized
+	resizedImage, err := imageprocessing.Resize(seedPath)
+	if err != nil {
+		return nil, fmt.Errorf("error resizing image %v", err)
+	}
+
 	// Write the init image to the request
 	initImageWriter, _ := writer.CreateFormField("init_image")
-	initImageFile, initImageErr := os.Open(seedPath)
+	initImageFile, initImageErr := os.Open(resizedImage)
 	if initImageErr != nil {
-		return nil, fmt.Errorf("could not open %s", seedPath)
+		return nil, fmt.Errorf("could not open %s", resizedImage)
 	}
 	_, _ = io.Copy(initImageWriter, initImageFile)
 

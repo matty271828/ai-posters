@@ -73,7 +73,7 @@ export const generateImage2Image = async (base64Image, prompt, setImages) => {
 
         // Assuming you have a separate endpoint to frame the image
         // For example, you send the generated image URL or the image blob to this endpoint
-        const frameEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/frame-image`;
+        const frameEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/frame-image?frameSize=small`;
         const frameResponse = await fetch(frameEndpoint, {
             method: 'POST',
             headers: {
