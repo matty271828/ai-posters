@@ -68,19 +68,17 @@ export const generateImage2Image = async (base64Image, prompt, setImages) => {
             throw new Error('Network response was not ok for generate image2image');
         }
 
-        const imageBlob = await generateImage2ImageResponse.blob();
-        const generatedImage2ImageUrl = URL.createObjectURL(imageBlob);
+        const unframedImageBlob = await generateImage2ImageResponse.blob();
+        const unframedImageUrl = URL.createObjectURL(unframedImageBlob);
 
-        // Assuming you have a separate endpoint to frame the image
-        // For example, you send the generated image URL or the image blob to this endpoint
+        // Second Endpoint: Frame Image
         const frameEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/frame-image?frameSize=small`;
         const frameResponse = await fetch(frameEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Adjust the body according to how your frame-image endpoint expects the data
-            body: JSON.stringify({ imagePath: generatedImage2ImageUrl }), // or use imageBlob
+            body: JSON.stringify({ imagePath: "./assets/out/v1_img2img_0.png" }), // Path used for server-side reference
         });
 
         if (!frameResponse.ok) {
@@ -91,7 +89,7 @@ export const generateImage2Image = async (base64Image, prompt, setImages) => {
         const framedImageUrl = URL.createObjectURL(frameImageBlob);
 
         // Update the images state with the new image URLs
-        setImages([generatedImage2ImageUrl, framedImageUrl]);
+        setImages([unframedImageUrl, framedImageUrl]);
     } catch (error) {
         console.error('Error:', error);
     }
