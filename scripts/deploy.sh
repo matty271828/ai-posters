@@ -8,8 +8,8 @@ fi
 #------------------------------- Configure initial set up if not done yet --------------------
 # Set the remote address
 REMOTE_SERVER="root@$1"
+REMOTE_PATH="/var/www/ai-posters"
 BINARY_PATH="/root/ai-posters/bin"  # Path for the Go binary
-UI_PATH="/var/www/ai-posters/ui"    # Path for the UI
 NGINX_CONFIG_LOCAL="configs/nginx/sites-available/ai-posters.conf"
 NGINX_CONFIG_REMOTE="/etc/nginx/sites-available/ai-posters"
 
@@ -99,21 +99,16 @@ fi
 
 # Transfer UI
 echo "Transferring the UI..."
-scp -r posters-ui/build/ ${REMOTE_SERVER}:${UI_PATH}/
+scp -r posters-ui/build/ ${REMOTE_SERVER}:${REMOTE_PATH}/ui
 if [ $? -ne 0 ]; then
     echo "Error transferring the UI. Exiting."
     exit 1
 fi
 
-# Adjust UI directory structure on the server
+# Ensure permissions are correct
 ssh ${REMOTE_SERVER} << 'EOF'
-rm -rf ${UI_PATH}/static/*
-if [ -d ${UI_PATH}/build ]; then
-    mv ${UI_PATH}/build/* ${UI_PATH}/
-    rm -rf ${UI_PATH}/build
-fi
-chown -R www-data:www-data ${UI_PATH}
-chmod -R 755 ${UI_PATH}
+chown -R www-data:www-data /var/www/ai-posters/ui
+chmod -R 755 /var/www/ai-posters/ui
 EOF
 
 echo "UI transferred and directory structure adjusted."
@@ -123,8 +118,7 @@ echo "Transferring updated assets..."
 rsync -avz --progress assets/ ${REMOTE_SERVER}:${REMOTE_PATH}/assets
 
 # Set permissions for Nginx
-echo "Setting permissions for Nginx..."
-ssh ${REMOTE_SERVER} "sudo chown -R www-data:www-data ${UI_PATH} && sudo chmod -R 755 ${UI_PATH}"
+ssh ${REMOTE_SERVER} "sudo chown -R www-data:www-data ${REMOTE_PATH} && sudo chmod -R 755 ${REMOTE_PATH}"
 if [ $? -ne 0 ]; then
     echo "Error setting permissions for Nginx. Exiting."
     exit 1
