@@ -103,40 +103,42 @@ function MainPage() {
                     </Box>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'right' }}>
-                    <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id="raised-button-file"
-                        type="file"
-                        onChange={handleImageUpload}
-                    />
-                    <label htmlFor="raised-button-file">
-                        <Button variant="contained" color="secondary" component="span">
-                            Upload Image
-                        </Button>
-                    </label>
-                    {uploadedImage && (
-                        <div 
-                            onClick={removeUploadedImage}
-                            style={{
-                                position: 'absolute',
-                                bottom: '-10px', 
-                                right: '-10px',
-                                width: '20px',
-                                height: '20px',
-                                borderRadius: '50%',
-                                backgroundColor: '#f50057',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                            }}
-                        >
-                            X
-                        </div>
-                    )}
+                    <div style={{ position: 'relative', display: 'inline-block' }}> {/* Positioned container */}
+                        <input
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            id="raised-button-file"
+                            type="file"
+                            onChange={handleImageUpload}
+                        />
+                        <label htmlFor="raised-button-file">
+                            <Button variant="contained" color="secondary" component="span">
+                                Upload Image
+                            </Button>
+                        </label>
+                        {uploadedImage && (
+                            <div 
+                                onClick={removeUploadedImage}
+                                style={{
+                                    position: 'absolute',
+                                    top: '0', // Adjust as necessary
+                                    right: '0', // Adjust as necessary
+                                    width: '20px',
+                                    height: '20px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#f50057',
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                }}
+                            >
+                                X
+                            </div>
+                        )}
+                    </div>
                 </Grid>
             </Grid>
             </Box>
