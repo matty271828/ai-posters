@@ -26,6 +26,7 @@ func main() {
 	server.AddRoute("/api/generate-image", api.NewAPI().GenerateImageHandler)
 	server.AddRoute("/api/frame-image", api.NewAPI().SuperImposeImageHandler)
 	server.AddRoute("/api/generate-image2image", api.NewAPI().GenerateImageToImageHandler)
+	server.AddRoute("/api/upscale-image", api.NewAPI().GenerateUpscaleHandler)
 
 	// Start the server
 	if err := server.Start(); err != nil {
