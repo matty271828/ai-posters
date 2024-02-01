@@ -7,12 +7,15 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { generateImage2Image, generateTextToImage } from '../services/imageService';
 import handleDownload from '../services/handleDownload';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
 
 function MainPage() {
     const [prompt, setPrompt] = useState('');
     const [loading, setLoading] = useState(false);
     const [images, setImages] = useState([]);
     const [uploadedImage, setUploadedImage] = useState(null);
+    const [strength, setStrength] = useState(0.35); // Default value
 
     const toBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -40,7 +43,7 @@ function MainPage() {
     const handleGenerate = async () => {
         setLoading(true);
         if (uploadedImage) {
-            await generateImage2Image(uploadedImage, prompt, setImages);
+            await generateImage2Image(uploadedImage, prompt, setImages, strength);
         } else {
             await generateTextToImage(prompt, setImages);
         }
@@ -70,57 +73,73 @@ function MainPage() {
                     fullWidth
                     margin="normal"
                 />
-                <Grid container spacing={2} alignItems="center" justify="space-between">
-                    <Grid item xs={6} style={{ textAlign: 'left' }}>
-                        <Button 
-                            variant="contained" 
-                            color="primary" 
-                            onClick={handleGenerate}
-                            disabled={loading}
-                        >
-                            Generate
-                        </Button>
-                        {loading && <CircularProgress style={{ marginLeft: '10px' }} />}
-                    </Grid>
-                    <Grid item xs={6} style={{ position: 'relative', textAlign: 'right' }}>
-                        <input
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            id="raised-button-file"
-                            type="file"
-                            onChange={handleImageUpload}
-                        />
-                        <label htmlFor="raised-button-file">
-                            <Button variant="contained" color="secondary" component="span">
-                                Upload Image
-                            </Button>
-                        </label>
-                        {uploadedImage && (
-                            <div 
-                                onClick={removeUploadedImage}
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '-10px', // Changed from top to bottom
-                                    right: '-10px',
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#f50057',
-                                    color: 'white',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                                }}
-                            >
-                                X
-                            </div>
-                        )}
-                    </Grid>
+            <Grid container spacing={2} alignItems="center" justify="space-between">
+                <Grid item xs={4} style={{ textAlign: 'left' }}>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        onClick={handleGenerate}
+                        disabled={loading}
+                    >
+                        Generate
+                    </Button>
+                    {loading && <CircularProgress style={{ marginLeft: '10px' }} />}
                 </Grid>
+                <Grid item xs={4}>
+                    <Box my={2}>
+                        <Typography id="strength-slider" gutterBottom>
+                            Strength
+                        </Typography>
+                        <Slider
+                            value={strength}
+                            onChange={(event, newValue) => setStrength(newValue)}
+                            aria-labelledby="strength-slider"
+                            valueLabelDisplay="auto"
+                            step={0.01}
+                            marks
+                            min={0}
+                            max={1}
+                        />
+                    </Box>
+                </Grid>
+                <Grid item xs={4} style={{ textAlign: 'right' }}>
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="raised-button-file"
+                        type="file"
+                        onChange={handleImageUpload}
+                    />
+                    <label htmlFor="raised-button-file">
+                        <Button variant="contained" color="secondary" component="span">
+                            Upload Image
+                        </Button>
+                    </label>
+                    {uploadedImage && (
+                        <div 
+                            onClick={removeUploadedImage}
+                            style={{
+                                position: 'absolute',
+                                bottom: '-10px', 
+                                right: '-10px',
+                                width: '20px',
+                                height: '20px',
+                                borderRadius: '50%',
+                                backgroundColor: '#f50057',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                            }}
+                        >
+                            X
+                        </div>
+                    )}
+                </Grid>
+            </Grid>
             </Box>
-
             <Grid container spacing={2}>
                 {images.map((image, index) => (
                     <Grid item xs={12} md={6} key={index}>

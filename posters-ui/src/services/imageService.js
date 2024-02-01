@@ -60,7 +60,7 @@ export const generateImage2Image = async (base64Image, prompt, setImages) => {
             body: JSON.stringify({
                 prompt: prompt,
                 seedBase64: base64Image, // Sending Base64-encoded image
-                strength: '0.35'
+                strength: strength.toString()
             }),
         });
 
