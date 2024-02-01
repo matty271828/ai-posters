@@ -8,7 +8,8 @@ fi
 #------------------------------- Configure initial set up if not done yet --------------------
 # Set the remote address
 REMOTE_SERVER="root@$1"
-REMOTE_PATH="/var/www/ai-posters"
+BINARY_PATH="/root/ai-posters/bin"  # Path for the Go binary
+UI_PATH="/var/www/ai-posters/ui"    # Path for the UI
 NGINX_CONFIG_LOCAL="configs/nginx/sites-available/ai-posters.conf"
 NGINX_CONFIG_REMOTE="/etc/nginx/sites-available/ai-posters"
 
@@ -57,25 +58,30 @@ fi
 
 # Step 2: SSH into the remote server and stop the service
 echo "Stopping the remote service..."
-ssh ${REMOTE_SERVER} "if sudo systemctl is-active --quiet ai-posters; then 
+echo "Stopping the remote service and preparing new binary..."
+ssh ${REMOTE_SERVER} "
+if sudo systemctl is-active --quiet ai-posters; then
     sudo systemctl stop ai-posters
-    if [ $? -ne 0 ]; then
-        echo 'Error stopping the service. Exiting.'
-        exit 1
-    fi
-else 
-    echo 'Service not found or already stopped.'
-fi"
+fi
+pkill -f ai-posters-binary
+rm -f ${BINARY_PATH}/ai-posters-binary
+mkdir -p ${BINARY_PATH}
+"
 
-# Ensure the bin directory exists on the remote server
-echo "Ensuring bin directory exists on the remote server..."
-ssh ${REMOTE_SERVER} "mkdir -p ${REMOTE_PATH}/bin"
-
-# Step 3: Push the binary to the remote server
+# Transfer the binary
 echo "Transferring the binary..."
-scp bin/ai-posters-binary ${REMOTE_SERVER}:${REMOTE_PATH}/bin/
+scp bin/ai-posters-binary ${REMOTE_SERVER}:${BINARY_PATH}/
 if [ $? -ne 0 ]; then
     echo "Error transferring the binary. Exiting."
+    exit 1
+fi
+
+
+# Set permissions on the binary
+echo "Setting execution permissions on the binary..."
+ssh ${REMOTE_SERVER} "chmod +x ${BINARY_PATH}/ai-posters-binary"
+if [ $? -ne 0 ]; then
+    echo "Error setting execution permissions on the binary. Exiting."
     exit 1
 fi
 
@@ -91,24 +97,23 @@ if [ ! -d "posters-ui/build" ]; then
     exit 1
 fi
 
+# Transfer UI
 echo "Transferring the UI..."
-scp -r posters-ui/build/ ${REMOTE_SERVER}:${REMOTE_PATH}/ui
+scp -r posters-ui/build/ ${REMOTE_SERVER}:${UI_PATH}/
 if [ $? -ne 0 ]; then
     echo "Error transferring the UI. Exiting."
     exit 1
 fi
 
+# Adjust UI directory structure on the server
 ssh ${REMOTE_SERVER} << 'EOF'
-# Clear out the existing static directory
-rm -rf /var/www/ai-posters/ui/static/*
-
-# Move new files from build directory
-if [ -d /var/www/ai-posters/ui/build ]; then
-    mv /var/www/ai-posters/ui/build/* /var/www/ai-posters/ui/
-    rm -rf /var/www/ai-posters/ui/build
+rm -rf ${UI_PATH}/static/*
+if [ -d ${UI_PATH}/build ]; then
+    mv ${UI_PATH}/build/* ${UI_PATH}/
+    rm -rf ${UI_PATH}/build
 fi
-chown -R www-data:www-data /var/www/ai-posters/ui
-chmod -R 755 /var/www/ai-posters/ui
+chown -R www-data:www-data ${UI_PATH}
+chmod -R 755 ${UI_PATH}
 EOF
 
 echo "UI transferred and directory structure adjusted."
@@ -119,7 +124,7 @@ rsync -avz --progress assets/ ${REMOTE_SERVER}:${REMOTE_PATH}/assets
 
 # Set permissions for Nginx
 echo "Setting permissions for Nginx..."
-ssh ${REMOTE_SERVER} "sudo chown -R www-data:www-data ${REMOTE_PATH} && sudo chmod -R 755 ${REMOTE_PATH}"
+ssh ${REMOTE_SERVER} "sudo chown -R www-data:www-data ${UI_PATH} && sudo chmod -R 755 ${UI_PATH}"
 if [ $? -ne 0 ]; then
     echo "Error setting permissions for Nginx. Exiting."
     exit 1
@@ -176,5 +181,9 @@ if [ $? -ne 0 ]; then
     echo "Error starting the service. Exiting."
     exit 1
 fi
+
+# Check if the service is running
+echo "Checking if the service is running..."
+ssh ${REMOTE_SERVER} "systemctl status ai-posters"
 
 echo "Deployment complete!"
