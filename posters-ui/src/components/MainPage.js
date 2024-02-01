@@ -7,8 +7,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { generateImage2Image, generateTextToImage } from '../services/imageService';
 import handleDownload from '../services/handleDownload';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+import StrengthSlider from './StrengthSlider';
 
 function MainPage() {
     const [prompt, setPrompt] = useState('');
@@ -65,90 +64,87 @@ function MainPage() {
     return (
         <Container>
             <Box my={4}>
-                <TextField 
-                    label="Enter a prompt" 
+                <TextField
+                    label="Enter a prompt"
                     variant="outlined"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     fullWidth
                     margin="normal"
                 />
-            <Grid container spacing={2} alignItems="center" justify="space-between">
-                <Grid item xs={4} style={{ textAlign: 'left' }}>
-                    <Button 
-                        variant="contained" 
-                        color="primary" 
-                        onClick={handleGenerate}
-                        disabled={loading}
-                    >
-                        Generate
-                    </Button>
-                    {loading && <CircularProgress style={{ marginLeft: '10px' }} />}
-                </Grid>
-                <Grid item xs={4}>
-                    <Box my={2}>
-                        <Typography id="strength-slider" gutterBottom>
-                            Strength
-                        </Typography>
-                        <Slider
-                            value={strength}
-                            onChange={(event, newValue) => setStrength(newValue)}
-                            aria-labelledby="strength-slider"
-                            valueLabelDisplay="auto"
-                            step={0.01}
-                            marks
-                            min={0}
-                            max={1}
-                        />
-                    </Box>
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: 'right' }}>
-                    <div style={{ position: 'relative', display: 'inline-block' }}> {/* Positioned container */}
-                        <input
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            id="raised-button-file"
-                            type="file"
-                            onChange={handleImageUpload}
-                        />
-                        <label htmlFor="raised-button-file">
-                            <Button variant="contained" color="secondary" component="span">
-                                Upload Image
-                            </Button>
-                        </label>
-                        {uploadedImage && (
-                            <div 
-                                onClick={removeUploadedImage}
-                                style={{
-                                    position: 'absolute',
-                                    top: '0', // Adjust as necessary
-                                    right: '0', // Adjust as necessary
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#f50057',
-                                    color: 'white',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                                }}
-                            >
-                                X
+                <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+                    {/* Generate button on the far left */}
+                    <Grid item xs={3} style={{ textAlign: 'left' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleGenerate}
+                            disabled={loading}
+                        >
+                            Generate
+                        </Button>
+                        {loading && <CircularProgress style={{ marginLeft: '10px' }} />}
+                    </Grid>
+    
+                    {/* Conditional rendering for the slider or placeholder for alignment */}
+                    <Grid item xs={6} style={{ textAlign: 'center' }}>
+                        {uploadedImage ? (
+                            <StrengthSlider strength={strength} setStrength={setStrength} />
+                        ) : (
+                            <div style={{ visibility: 'hidden' }}>
+                                <StrengthSlider strength={0.35} setStrength={() => {}} />
                             </div>
                         )}
-                    </div>
+                    </Grid>
+    
+                    {/* Upload Image button on the far right */}
+                    <Grid item xs={3} style={{ textAlign: 'right' }}>
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <input
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                id="raised-button-file"
+                                type="file"
+                                onChange={handleImageUpload}
+                            />
+                            <label htmlFor="raised-button-file">
+                                <Button variant="contained" color="secondary" component="span">
+                                    Upload Image
+                                </Button>
+                            </label>
+                            {uploadedImage && (
+                                <div
+                                    onClick={removeUploadedImage}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '0',
+                                        right: '0',
+                                        width: '20px',
+                                        height: '20px',
+                                        borderRadius: '50%',
+                                        backgroundColor: '#f50057',
+                                        color: 'white',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                    }}
+                                >
+                                    X
+                                </div>
+                            )}
+                        </div>
+                    </Grid>
                 </Grid>
-            </Grid>
             </Box>
             <Grid container spacing={2}>
                 {images.map((image, index) => (
                     <Grid item xs={12} md={6} key={index}>
                         <img src={image} alt="Generated" style={{ width: '100%' }} />
-                        <Button 
-                            variant="contained" 
-                            color="secondary" 
+                        <Button
+                            variant="contained"
+                            color="secondary"
                             onClick={() => handleDownload(image)}
                             style={{ margin: '10px 0' }}
                         >
@@ -158,8 +154,7 @@ function MainPage() {
                 ))}
             </Grid>
         </Container>
-    );
-    
+    );       
 }
 
 export default MainPage;
