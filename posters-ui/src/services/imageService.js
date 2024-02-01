@@ -48,7 +48,7 @@ export const generateTextToImage = async (prompt, setImages) => {
     }
 };
 
-export const generateImage2Image = async (base64Image, prompt, setImages) => {
+export const generateImage2Image = async (base64Image, prompt, setImages, strength) => {
     try {
         // Endpoint: Generate Image from Image
         const generateImage2ImageEndpoint = `${process.env.REACT_APP_API_BASE_URL}/api/generate-image2image`;
