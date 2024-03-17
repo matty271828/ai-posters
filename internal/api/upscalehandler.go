@@ -87,7 +87,7 @@ func decodeBase64Image(base64Data string) (string, error) {
 
 	// Generate a unique file name for the new image to prevent overwriting existing files
 	// Here using a simple approach for demonstration; consider a more robust method for production
-	filePath := fmt.Sprintf("%s/%d.png", outPath, os.Getpid())
+	filePath := fmt.Sprintf("%s/preupscale.png", outPath)
 
 	tmpFile, err := os.Create(filePath)
 	if err != nil {
