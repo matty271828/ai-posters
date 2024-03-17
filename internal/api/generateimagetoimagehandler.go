@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/matty271828/ai-posters/internal/jobs"
 )
@@ -84,22 +84,19 @@ func decodeImage(request GenerateImageToImageHandlerRequest) (string, error) {
 	return filePath, nil
 }
 
-// removeDataURLPrefix removes data URL prefix from base64 encoded images.
+// removeDataURLPrefix removes the data URL prefix from a base64 encoded image string.
+// This version uses a regular expression to match a broader range of image data URLs.
 func removeDataURLPrefix(base64Data string) string {
-	// Define a list of possible prefixes
-	prefixes := []string{
-		"data:image/png;base64,",
-		"data:image/jpeg;base64,",
-		// Add other image formats as needed
+	// Regular expression to match the data URL prefix and capture the base64 part
+	re := regexp.MustCompile(`^data:image\/[a-zA-Z]+;base64,`)
+
+	// Find the match and the index of the start of the base64 string
+	indexes := re.FindStringSubmatchIndex(base64Data)
+	if indexes != nil {
+		// If a match is found, return the base64 part of the string
+		return base64Data[indexes[1]:]
 	}
 
-	// Iterate over the prefixes and remove if found
-	for _, prefix := range prefixes {
-		if strings.HasPrefix(base64Data, prefix) {
-			return strings.TrimPrefix(base64Data, prefix)
-		}
-	}
-
-	// Return the original string if no prefix is found
+	// If no match is found, return the original string as it might already be in base64
 	return base64Data
 }
