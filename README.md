@@ -1,5 +1,7 @@
 # AI Generated Posters - Project README
 
+Visit the site at [www.mindbrush.art](https://mindbrush.art)
+
 ## Project Overview
 
 AI Generated Posters is an innovative web application designed to bring custom poster designs to life using cutting-edge AI technology. Users can simply type in a prompt describing their desired poster, and our AI, powered by Stable Diffusion, generates a unique poster based on that input. The project is currently in the prototyping stage and aims to expand into a comprehensive service including poster creation, a payment system, and more.
